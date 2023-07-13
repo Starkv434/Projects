@@ -74,6 +74,7 @@ let songs = [
 
 // Initial 
 let audioElement = new Audio(songs[0].filePath)
+let song_size = songs.length -1;
 
 
 // Play Button
@@ -94,14 +95,13 @@ play_pause.addEventListener('click', () => {
     })
     
     
-    // Change of Progress 
+    // Change of Progress bar value with time
     audioElement.addEventListener('timeupdate', () => {
       progress = parseInt((audioElement.currentTime/audioElement.duration)*100);
       progressbar.value = progress;
-
-      
     })
     
+      // Change of time of song when progress bar is changed
     progressbar.addEventListener('change', () => {
       audioElement.currentTime = parseInt((progressbar.value * audioElement.duration)/100);
     })
@@ -135,19 +135,32 @@ play_pause.addEventListener('click', () => {
 });
 
 
-// LOOP
-// audioElement.addEventListener('ended', () =>{
-//   audioElement.play();
-//   play_pause.classList.remove('fa-circle-play');
-//   play_pause.classList.add('fa-circle-pause');
-//   gif.style.opacity = "1";
-// })
+// Continuous loop of songs
+audioElement.addEventListener('ended', () =>{
+  if(song_index != song_size){ 
+    song_index += 1;
+    audioElement.src = songs[song_index].filePath;
+    
+    document.querySelector('.sname').innerHTML = songs[song_index].song_name;
+    audioElement.play();
+    play_pause.classList.remove('fa-circle-play');
+    play_pause.classList.add('fa-circle-pause');
+    gif.style.opacity = "1";
+  } 
+  else{
+    song_index = 0;
+    audioElement.src = songs[song_index].filePath;
+    
+    document.querySelector('.sname').innerHTML = songs[song_index].song_name;
+    audioElement.play();
+    
+  }
+})
 
-
+// Previous button
 prev.addEventListener('click', () => {
   if(song_index == 0){
-    let song_size = songs.length;
-    audioElement.src = songs[song_size-1].filePath;
+    audioElement.src = songs[song_size].filePath;
     song_index = song_size - 1;
   }
   else{
@@ -161,7 +174,7 @@ prev.addEventListener('click', () => {
   gif.style.opacity = "1";
 })
 
-
+// Next button
 next.addEventListener('click', () => {
   if(song_index == songs.length-1){
     audioElement.src = songs[0].filePath;
